@@ -1,4 +1,4 @@
-import { observable, action, computed, reaction } from "mobx";
+import { observable, action, computed, reaction, makeObservable } from "mobx";
 import { createContext } from "react";
 import { v4 as uuidv4 } from "uuid";
 
@@ -9,21 +9,25 @@ export interface Todo {
 }
 
 class TodoStore {
-  constructor() {
-    reaction(
-      () => this.todos,
-      (_) => console.log(this.todos.length)
-    );
-  }
-
-  @observable todos: Todo[] = [
+  todos: Todo[] = [
     { id: uuidv4(), title: "Item #1", completed: false },
     { id: uuidv4(), title: "Item #2", completed: false },
     { id: uuidv4(), title: "Item #3", completed: false },
     { id: uuidv4(), title: "Item #4", completed: false },
     { id: uuidv4(), title: "Item #5", completed: true },
-    { id: uuidv4(), title: "Item #6", completed: false },
+    { id: uuidv4(), title: "Item #6", completed: true },
   ];
+
+  constructor() {
+    reaction(
+      () => this.todos,
+      (_) => console.log(this.todos.length)
+    );
+
+    makeObservable(this, {
+      todos: observable,
+    });
+  }
 
   @action addTodo = (todo: Todo) => {
     this.todos.push({ ...todo, id: uuidv4() });

@@ -35,6 +35,7 @@ const AddTodo = () => {
       <div className="form-group">
         <button
           className="btn btn-primary"
+          disabled={title === ""}
           onClick={(_) => {
             addTodo({
               title: title,
