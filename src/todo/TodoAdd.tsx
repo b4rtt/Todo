@@ -5,7 +5,18 @@ import { observer } from "mobx-react-lite";
 const AddTodo = () => {
   const [title, setTitle] = useState("");
   const todoStore = useContext(TodoStore);
-  const { addTodo, info } = todoStore;
+  const { addTodo, info, removeSelectedTodos } = todoStore;
+
+  const onFormSubmit = (e: any) => {
+    e.preventDefault();
+
+    addTodo({
+      title: title,
+      completed: false,
+      checked: false,
+    });
+    setTitle("");
+  };
 
   return (
     <>
@@ -22,31 +33,38 @@ const AddTodo = () => {
           Unfinished items: &nbsp;
           <span className="badge badge-info">{info.notCompleted}</span>
         </div>
+        <div className="d-inline col-4">
+          Checked
+          <span className="badge badge-info">{info.checked}</span>
+          <button
+            className="btn btn-sm btn-danger ml-3"
+            disabled={info.checked === 0}
+            onClick={removeSelectedTodos}
+          >
+            Delete all
+          </button>
+        </div>
       </div>
-      <div className="form-group">
-        <input
-          className="form-control"
-          type="text"
-          value={title}
-          placeholder="Todo title..."
-          onChange={(e) => setTitle(e.target.value)}
-        />
-      </div>
-      <div className="form-group">
-        <button
-          className="btn btn-primary"
-          disabled={title === ""}
-          onClick={(_) => {
-            addTodo({
-              title: title,
-              completed: false,
-            });
-            setTitle("");
-          }}
-        >
-          Add Todo
-        </button>
-      </div>
+      <form onSubmit={(e) => onFormSubmit(e)}>
+        <div className="form-group">
+          <input
+            className="form-control"
+            type="text"
+            value={title}
+            placeholder="Todo title..."
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <button
+            className="btn btn-primary"
+            type="submit"
+            disabled={title === ""}
+          >
+            Add Todo
+          </button>
+        </div>
+      </form>
     </>
   );
 };
